@@ -1,54 +1,35 @@
 #include "binary_trees.h"
 
-size_t depth(const binary_tree_t *tree);
-
 /**
- * binary_trees_ancestor - Finds the lowest common ancestor of two nodes.
- * @first: Pointer to the first node.
- * @second: Pointer to the second node.
+ * binary_tree_insert_right - Insert a node as the right-child
+ *                            of another in a binary tree.
+ * @parent: A pointer to the node to insert the right-child in.
+ * @value: The value to store in the new node.
  *
- * Return: If no common ancestors return NULL, else return common ancestor.
- */
-binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
-		const binary_tree_t *second)
-{
-	size_t first_depth, second_depth;
-
-	if (first == NULL || second == NULL)
-		return (NULL);
-	if (first == second)
-		return ((binary_tree_t *)first);
-	if (first->parent == second->parent)
-		return ((binary_tree_t *)first->parent);
-	if (first == second->parent)
-		return ((binary_tree_t *)first);
-	if (first->parent == second)
-		return ((binary_tree_t *)second);
-
-	for (first_depth = depth(first); first_depth > 1; first_depth--)
-		first = first->parent;
-	for (second_depth = depth(second); second_depth > 1; second_depth--)
-		second = second->parent;
-
-	if (first == second)
-		return ((binary_tree_t *)first);
-	if (first->parent == second->parent)
-		return ((binary_tree_t *)first->parent);
-	if (first == second->parent)
-		return ((binary_tree_t *)first);
-	if (first->parent == second)
-		return ((binary_tree_t *)second);
-	else
-		return (NULL);
-}
-
-/**
- * depth - Measures the depth of a node in a binary tree.
- * @tree: A pointer to the node to measure the depth.
+ * Return: If parent is NULL or an error occurs - NULL.
+ *         Otherwise - a pointer to the new node.
  *
- * Return: If tree is NULL, your function must return 0, else return the depth.
+ * Description: If parent already has a right-child, the new node
+ *              takes its place and the old right-child is set as
+ *              the right-child of the new node.
  */
-size_t depth(const binary_tree_t *tree)
+binary_tree_t *binary_tree_insert_right(binary_tree_t *parent, int value)
 {
-	return ((tree->parent != NULL) ? 1 + depth(tree->parent) : 0);
+	binary_tree_t *new;
+
+	if (parent == NULL)
+		return (NULL);
+
+	new = binary_tree_node(parent, value);
+	if (new == NULL)
+		return (NULL);
+
+	if (parent->right != NULL)
+	{
+		new->right = parent->right;
+		parent->right->parent = new;
+	}
+	parent->right = new;
+
+	return (new);
 }
